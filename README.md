@@ -1,3 +1,14 @@
+# Figma API Integration POC
+
+A quick/dirty POC for testing the Figma API in a website.
+
+## Findings
+
+- Really deep (object tree) data structure. You could essentially rebuild Figma from scratch (not that it’s feasible!)
+- Easy authentication would require a Figma user with read-only access to specific documents to generate an access code used for the API calls
+- Embedded private Figma pages won’t display unless you are currently logged into Figma and have access.
+- Retrieving tokens requires a lot of sorting, mapping, and filtering from multiple data sources and is heavily dependent on the page structure/naming.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
