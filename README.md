@@ -8,6 +8,7 @@ A quick/dirty POC for testing the Figma API in a website.
 - Easy authentication would require a Figma user with read-only access to specific documents to generate an access code used for the API calls
 - Embedded private Figma pages won’t display unless you are currently logged into Figma and have access.
 - Retrieving tokens requires a lot of sorting, mapping, and filtering from multiple data sources and is heavily dependent on the page structure/naming.
+- If structured in Figma correctly, components can be referenced by their nodeId along with metadata which includes name, thumbnails, text, sub components, etc...
 
 # Getting Started with Create React App
 
