@@ -1,5 +1,4 @@
-
-const TOKEN = // Add generated user access token;
+import { TOKEN } from "./App";
 
 // Fetches a document by the document key
 export const fetchFigmaFile = (key: string) => {

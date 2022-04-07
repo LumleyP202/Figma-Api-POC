@@ -7,6 +7,10 @@ import {
   getNodes,
 } from "./FigmaHelper";
 
+export const TOKEN = ""; // User generated token
+const PAGE_TOKEN = ""; // page id taken from the url
+const PAGE_NAME = ""; // Name of design system for embed url
+
 const Swatch = ({ color, name }: any) => (
   <div className="swatch">
     <div
@@ -24,10 +28,8 @@ const Swatch = ({ color, name }: any) => (
 
 function App() {
   const [tokens, updateTokens] = useState([]);
-  const [components, updateComponents] = useState([]);
-
-  const pageToken = TOKEN;
-  const embedUrl = EMBED_URL;
+  const [components, updateComponents]: any[] = useState([]);
+  const [selectedComponent, updateSelectedComponent]: any = useState();
 
   // Converts provided RGB to standard
   const toHex = (value: any) => Math.round(value * 255);
@@ -40,11 +42,11 @@ function App() {
   useEffect(() => {
     const getTokens = async () => {
       // Get all figma "styles" - essentially tokens
-      fetchFigmaStyles(pageToken)
+      fetchFigmaStyles(PAGE_TOKEN)
         // Get all nodeId's associated with styles/tokens
         .then(getNodes)
         // Get all figma nodes from the nodeId array
-        .then((results) => fetchFigmaNodes(pageToken, results))
+        .then((results) => fetchFigmaNodes(PAGE_TOKEN, results))
         .then((results) => {
           let { nodes } = results;
           const arr: any = [];
@@ -79,7 +81,7 @@ function App() {
   useEffect(() => {
     const getComponents = async () => {
       // Get a list of all components
-      fetchFigmaComponentSets(pageToken).then((results) => {
+      fetchFigmaComponentSets(PAGE_TOKEN).then((results) => {
         // Grab what we need from metadata
         const componentSets = results.meta.component_sets.map(
           (component: any) => {
@@ -96,25 +98,45 @@ function App() {
     getComponents();
   }, []);
 
+  const handleChange = (e: any) => {
+    // Change the selected component
+    updateSelectedComponent(e.target.value);
+  };
+
   return (
     <div>
-      <h1>Embed</h1>
-      <iframe title="test" width="800" height="450" src={embedUrl}></iframe>
       <div className="App">
         <h1>Tokens</h1>
+        <p>Display a list of tokens and their color values:</p>
         <div className="grid">
           {tokens.map((token: any, i) => (
             <Swatch key={i} color={token.color} name={token.name} />
           ))}
         </div>
-        <h1>Components w/ Thumbnails</h1>
-        <div className="grid">
-          {components.map((component: any, i) => (
-            <div className="component">
-              {component.name}
-              <img key={`${i}-component`} src={component.thumbnail} alt="" />
+        <h1>Components</h1>
+        <p>
+          Grab a list of all components and use the NodeID and display the name,
+          thumbnail, and embed the Figma frame of the component.
+        </p>
+        <div>
+          <select onChange={(e) => handleChange(e)}>
+            <option value={undefined}>Pick a Component</option>
+            {components.map((component: any, i: number) => (
+              <option value={i}>{component.name}</option>
+            ))}
+          </select>
+          {selectedComponent && (
+            <div>
+              <h2>{components[selectedComponent].name}</h2>
+              <img src={components[selectedComponent].thumbnail} alt="" />
+              <iframe
+                title="test"
+                width="800"
+                height="450"
+                src={`https://www.figma.com/embed?embed_host=share&url=https://www.figma.com/file/${PAGE_TOKEN}/${PAGE_NAME}?node-id=${components[selectedComponent].nodeId}`}
+              ></iframe>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>
